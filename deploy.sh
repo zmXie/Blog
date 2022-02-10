@@ -17,4 +17,4 @@ echo '推送完成'
 cd ../
 rm -rf public
 
-echo '本地构建产物已删除'  
+echo '本地构建产物已删除'
