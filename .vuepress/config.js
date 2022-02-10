@@ -66,13 +66,16 @@ module.exports = {
         "title": "前端小课",
         "desc": "前端知识小集",
         "link": "https://lefex.gitee.io/books/"
+      },
+      {
+        "title": "匠心博客",
+        "desc": "知名博客集合",
+        "link": "https://zhaomenghuan.js.org/nav/"
       }
-
     ],
     "logo": "/avatar.png",
     "search": true,
     "searchMaxSuggestions": 10,
-    "lastUpdated": "Last Updated",
     "author": "xzm",
     "authorAvatar": "/avatar.png",
     "startYear": "2022"
