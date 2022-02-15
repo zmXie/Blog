@@ -96,12 +96,18 @@ module.exports = {
   markdown: {
     lineNumbers: true
   },
-  plugins: {
-    '@vuepress/medium-zoom': {
+  plugins: [
+    ['@vuepress/medium-zoom', {
       selector: 'img',
       options: {
         margin: 16
       }
-    }
-  }
+    }],
+    ["vuepress-plugin-nuggets-style-copy", {
+      copyText: "复制",
+      tip: {
+        content: "复制成功!"
+      }
+    }]
+  ]
 }
