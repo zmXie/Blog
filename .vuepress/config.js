@@ -26,7 +26,7 @@ module.exports = {
     searchMaxSuggestions: 10,
     author: "xzm",
     authorAvatar: "/avatar.png",
-    startYear: "2022",
+    startYear: "2021",
     nav: [{
         text: "Home",
         link: "/",
