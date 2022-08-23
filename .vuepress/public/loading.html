@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet"
+        href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/element-ui/2.15.2/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="content">
+            <div>
+                <span>element-ui效果</span>
+                <div v-loading="true" style="height: 100px"></div>
+            </div>
+            <div style="margin-left: 30px;">
+                <div>svg+animation效果</div>
+                <div style="height: 100px;display: flex;align-items: center;justify-content: center;">
+                    <svg width="42" height="42" viewBox="25 25 50 50" class="box">
+                        <circle cx="50" cy="50" r="20" fill="none" class="circle"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.8"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/element-ui/2.15.2/index.js"></script>
+<script>
+    window.app = new Vue({
+        el: '#app',
+        data: {
+            message: '开始'
+        },
+        created() {
+        },
+        mounted() {
+        },
+        methods: {
+        },
+    });
+</script>
+
+<style>
+    .content {
+        display: flex;
+    }
+    .box {
+        animation: rotate 2s infinite linear;
+    }
+    .box .circle {
+        stroke-width: 2;
+        stroke: #409eff;
+        stroke-linecap: round;
+        animation: circle 1.5s infinite ease-in-out both;
+    }
+    /* 旋转动画 */
+    @keyframes rotate {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    /* 弧线动画 */
+    /* 圆的周长：2πr=2*3.14*20=125.6 */
+    @keyframes circle {
+        0% {
+            /* 状态1: 点，虚线长为1 间距200 */
+            stroke-dasharray: 1 150;
+            stroke-dashoffset: 0;
+        }
+        50% {
+            /* 状态2: 圆，虚线长100 间距150 并且向右偏移40 */
+            stroke-dasharray: 100, 150;
+            stroke-dashoffset: -40;
+        }
+        to {
+            /* 状态3: 点，虚线长100 间距150 并且向右偏移120 */
+            stroke-dasharray: 100 150;
+            stroke-dashoffset: -120px;
+        }
+    }
+</style>
+
+</html>
