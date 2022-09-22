@@ -87,6 +87,11 @@ module.exports = {
         title: "匠心博客",
         desc: "知名博客集合",
         link: "https://zhaomenghuan.js.org/nav/"
+      },
+      {
+        title: "runoob",
+        desc: "DOM+BOM方法属性一览",
+        link: "https://www.runoob.com/jsref/dom-obj-document.html"
       }
     ],
     // valine 设置
