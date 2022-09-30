@@ -92,6 +92,11 @@ module.exports = {
         title: "runoob",
         desc: "DOM+BOM方法属性一览",
         link: "https://www.runoob.com/jsref/dom-obj-document.html"
+      },
+      {
+        title: "macwk",
+        desc: "mac破解软件",
+        link: "https://macwk.com"
       }
     ],
     // valine 设置
