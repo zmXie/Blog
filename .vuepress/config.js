@@ -89,6 +89,11 @@ module.exports = {
         link: "https://zhaomenghuan.js.org/nav/"
       },
       {
+        title: "vue-admin",
+        desc: "花裤衩",
+        link: "https://panjiachen.github.io/vue-element-admin-site/zh/"
+      },
+      {
         title: "runoob",
         desc: "DOM+BOM方法属性一览",
         link: "https://www.runoob.com/jsref/dom-obj-document.html"
