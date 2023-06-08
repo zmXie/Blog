@@ -10,7 +10,7 @@ git commit -m 'deploy'
 
 echo '正在推送中..'  
 
-git push -f git@github.com:zmXie/zmXie.github.io.git master
+git push -f git@github.com:zmXie/zmXie.github.io.git main
 
 echo '推送完成'  
 
