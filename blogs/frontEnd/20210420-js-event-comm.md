@@ -1,5 +1,5 @@
 ---
-title: JavaScript事件通信（EventBus、dispatchEvent）
+title: JavaScript事件通信（EventBus、dispatchEvent、postMessage）
 date: 2021-04-20
 tags:
   - JavaScript
@@ -9,6 +9,7 @@ categories:
 
 - `EventBus（事件总线）`是一种可以跨组件的全局通信方式，核心思想是通过单例转发事件来实现。
 - `dispatchEvent（事件分发）`也是一种可以跨组件的全局通信方式，核心思想是通过`window`派发自定义事件来实现。
+- `postMessage（发送消息）`不仅可以跨组件通信，还能跨域通信。
 
 <!-- more -->
 
@@ -78,4 +79,25 @@ categories:
   click(){
     window.dispatchEvent(new CustomEvent('refresh',{id:'1'}));
   }
+```
+
+### postMessage
+
+```js
+// 外部监听消息，并给iframe发送消息
+window.onmessage = function (event) {
+  console.log(event);
+};
+function sendMsg() {
+  const iframe = document.querySelector('iframe');
+  iframe.contentWindow.postMessage({ from: 'main', data: { a: 'a' } }, '*');
+}
+// iframe中监听消息，并给外部发送消息
+window.onmessage = function (event) {
+  console.log(event);
+};
+function sendMsg() {
+  // window.parent：获取外层窗口
+  window.parent.postMessage({ from: 'iframe', data: { b: 'b' } });
+}
 ```
