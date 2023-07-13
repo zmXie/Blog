@@ -28,23 +28,27 @@ module.exports = {
     authorAvatar: "/avatar.png",
     startYear: "2021",
     nav: [{
-        text: "Home",
-        link: "/",
-        icon: "reco-home"
+      text: "Home",
+      link: "/",
+      icon: "reco-home"
+    },
+    {
+      text: "Contact",
+      icon: "reco-message",
+      items: [{
+        text: "GitHub",
+        link: "https://github.com/zmXie?tab=repositories",
       },
       {
-        text: "Contact",
-        icon: "reco-message",
-        items: [{
-            text: "GitHub",
-            link: "https://github.com/zmXie?tab=repositories",
-          },
-          {
-            text: "简书",
-            link: "https://www.jianshu.com/u/03e9c9f9a30f",
-          }
-        ]
+        text: "简书",
+        link: "https://www.jianshu.com/u/03e9c9f9a30f",
+      },
+      {
+        text: "npm",
+        link: "https://www.npmjs.com/~xiezhimin",
       }
+      ]
+    }
     ],
     type: "blog",
     blogConfig: {
@@ -58,51 +62,51 @@ module.exports = {
       }
     },
     friendLink: [{
-        title: "vuepress-theme-reco",
-        desc: "A simple and beautiful vuepress Blog & Doc theme.",
-        avatar: "https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png",
-        link: "https://vuepress-theme-reco.recoluan.com"
-      },
-      {
-        title: "Valine",
-        desc: "一款快速、简洁且高效的无后端评论系统",
-        link: "https://valine.js.org/"
-      },
-      {
-        title: "ProcessOn",
-        desc: "在线做图工具",
-        link: "https://www.processon.com/diagrams"
-      },
-      {
-        title: "午后南杂",
-        desc: "Enjoy when you can, and endure when you must.",
-        link: "https://www.recoluan.com"
-      },
-      {
-        title: "前端小课",
-        desc: "前端知识小集",
-        link: "https://lefex.gitee.io/books/"
-      },
-      {
-        title: "匠心博客",
-        desc: "知名博客集合",
-        link: "https://zhaomenghuan.js.org/nav/"
-      },
-      {
-        title: "vue-admin",
-        desc: "花裤衩",
-        link: "https://panjiachen.github.io/vue-element-admin-site/zh/"
-      },
-      {
-        title: "runoob",
-        desc: "DOM+BOM方法属性一览",
-        link: "https://www.runoob.com/jsref/dom-obj-document.html"
-      },
-      {
-        title: "macwk",
-        desc: "mac破解软件",
-        link: "https://macwk.com"
-      }
+      title: "vuepress-theme-reco",
+      desc: "A simple and beautiful vuepress Blog & Doc theme.",
+      avatar: "https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png",
+      link: "https://vuepress-theme-reco.recoluan.com"
+    },
+    {
+      title: "Valine",
+      desc: "一款快速、简洁且高效的无后端评论系统",
+      link: "https://valine.js.org/"
+    },
+    {
+      title: "ProcessOn",
+      desc: "在线做图工具",
+      link: "https://www.processon.com/diagrams"
+    },
+    {
+      title: "午后南杂",
+      desc: "Enjoy when you can, and endure when you must.",
+      link: "https://www.recoluan.com"
+    },
+    {
+      title: "前端小课",
+      desc: "前端知识小集",
+      link: "https://lefex.gitee.io/books/"
+    },
+    {
+      title: "匠心博客",
+      desc: "知名博客集合",
+      link: "https://zhaomenghuan.js.org/nav/"
+    },
+    {
+      title: "vue-admin",
+      desc: "花裤衩",
+      link: "https://panjiachen.github.io/vue-element-admin-site/zh/"
+    },
+    {
+      title: "runoob",
+      desc: "DOM+BOM方法属性一览",
+      link: "https://www.runoob.com/jsref/dom-obj-document.html"
+    },
+    {
+      title: "macwk",
+      desc: "mac破解软件",
+      link: "https://macwk.com"
+    }
     ],
     // valine 设置
     valineConfig: {
