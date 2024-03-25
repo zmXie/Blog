@@ -191,6 +191,16 @@
       color: #d46854;
     }
 
+    .sector-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sector-wrapper-trans {
+      transition: transform 3s cubic-bezier(.2, .93, .43, 1);
+    }
+
     .pointer-trans {
       transition: transform 3s cubic-bezier(.2, .93, .43, 1);
     }
@@ -242,7 +252,7 @@
       text-align: center;
       /*margin: 20px 60px;*/
       margin: 0 auto;
-
+      color: crimson;
     }
 
     /*背景层*/
@@ -335,12 +345,14 @@
     <div class="wrapper">
       <div :class=['light',onRotation?'light-twinkling':''] v-for="light in foodList"></div>
       <div class="panel">
-        <div class="sector" v-for="food in foodList">
-          <div class="sector-inner">
-            <span>{{ food }}</span>
+        <div :class=["sector-wrapper",onRotation?'sector-wrapper-trans':''] @transitionend="afterTransitionend">
+          <div class="sector" v-for="food in foodList">
+            <div class="sector-inner">
+              <span>{{ food }}</span>
+            </div>
           </div>
         </div>
-        <div :class=["pointer",onRotation?'pointer-trans':''] @transitionend="afterTransitionend" @click="handleClick">
+        <div :class=["pointer"] @click="handleClick">
           吃什么呢
         </div>
       </div>
@@ -408,12 +420,12 @@
         //获得当前结果
         function getReward() {
           let getEle = document.getElementsByClassName.bind(document);
-          let pointer = getEle('pointer')[0]; //获取指针元素
+          let pointer = getEle('sector-wrapper')[0]; //获取指针元素
           let currentDeg = nextStatus.deg ? nextStatus.deg : 0; //如果当前已有角度则获取角度 无则为0
           // 转三圈到四圈
           let rotateDeg = Math.random() * 360 + 1080;
           currentDeg += rotateDeg; //加上旋转的随机角度
-          let rewardText = foodList.value[Math.floor((currentDeg + 18) % 360 / 36)] //获取结果位置的食物
+          let rewardText = foodList.value[foodList.value.length - Math.floor((currentDeg) % 360 / 36)] //获取结果位置的食物
           nextStatus = {
             deg: currentDeg,
             food: rewardText
