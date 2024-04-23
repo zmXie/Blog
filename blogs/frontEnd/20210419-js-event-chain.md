@@ -17,6 +17,8 @@ categories:
 - **目标阶段**：事件到达目标节点，目标节点处理事件阶段。
 - **冒泡阶段**：事件从目标节点开始，从下往上传播，直到根节点。
 
+<img style="width:50%" :src="$withBase('/event_chain.png')" alt="eventChain">
+
 在事件流中，每个元素都可以对事件进行处理，可以通过`addEventListener`添加事件监听，也可以使用 `on` 开头的属性设置事件处理函数，**默认在冒泡阶段响应。**，比如元素节点`html`->`div`->`p`，点击 p，则触发的 click 事件顺序为`p`->`div`->`html`。
 
 ```html
@@ -113,4 +115,20 @@ addEventListener('click', function () {}, true); // true则表示为指定捕获
 
 ### 事件委托
 
-利用事件冒泡机制，将事件绑定到父元素上，从而避免每一个子元素都绑定事件，减少开销。然后通过`e.target`获取目标元素，通过`dataset`获取目标元素绑定的数据。
+利用事件冒泡机制，将事件绑定到父元素上，从而避免每一个子元素都绑定事件，减少开销。然后通过`e.target`获取目标元素，再通过目标原色的`dataset`即可获取目标元素绑定的数据。
+
+```html
+<body>
+  <div onclick="pClick(event)">
+    <div class="cell" data-index="1">cell1</div>
+    <div class="cell" data-index="2">cell2</div>
+    <div class="cell" data-index="3">cell3</div>
+  </div>
+
+  <script>
+    function pClick(e) {
+      console.log(e.target.dataset.index); // 1、2、3
+    }
+  </script>
+</body>
+```
