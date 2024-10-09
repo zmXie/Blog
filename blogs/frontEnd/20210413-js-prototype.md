@@ -23,7 +23,7 @@ categories:
 
   Person.prototype.age = 0;
   Person.prototype.eat = function () {
-    return "吃饭";
+    return '吃饭';
   };
   let p = new Person();
   console.log(p.age); // 0
@@ -57,7 +57,7 @@ categories:
   console.log(Person.prototype.constructor === Person); // true
   ```
 
-![原型与构造函数](http://assets.processon.com/chart_image/621cad861efad40767375298.png "原型与构造函数")
+<img :src="$withBase('/原型与构造函数.png')" alt="mixureSecure">
 
 ### 原型链
 
@@ -68,7 +68,7 @@ categories:
   let xiaoming = new Person();
   ```
 
-  ![对象原型链](http://assets.processon.com/chart_image/621c5da27d9c0865b2e13386.png "对象原型链")
+  <img :src="$withBase('/对象原型链.png')" alt="mixureSecure">
 
-- 在JavaScript中函数也是对象，同样有`__proto__`指针属性，所有函数的`__proto__`都统一指向`Function.prototype`，`Function.prototype`的`__proto__`指向`Object.prototype`。
-  ![完整原型链](http://assets.processon.com/chart_image/621c3f0fe401fd520c194fae.png "完整原型链")
+- 在 JavaScript 中函数也是对象，同样有`__proto__`指针属性，所有函数的`__proto__`都统一指向`Function.prototype`，`Function.prototype`的`__proto__`指向`Object.prototype`。
+  <img :src="$withBase('/完整原型链.png')" alt="mixureSecure">
