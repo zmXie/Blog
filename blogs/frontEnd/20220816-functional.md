@@ -11,7 +11,7 @@ categories:
 
 ### 函数式组件
 
-函数式组件是一个没有 Vue 实例的组件，意味着没有响应式数据，也没有生命周期函数，也没有 this 上下文，只接受 props 的一个组件，一般用于性能优化，比如长列表的 cell，数据都来源于 props，没有 Vue 实例和数据监听，性能更好。
+函数式组件是一个没有 Vue 实例的组件，意味着没有响应式数据，也没有生命周期函数，也没有 this 上下文，只接受 props 的一个组件，一般用于性能优化，比如长列表的 cell，数据都来源于 props，它没有 Vue 实例和数据监听，性能更好。
 
 - **方式 1**：设置 `functional: true`，标记为函数式组件。
 
@@ -74,14 +74,19 @@ render 是一个渲染函数，可以通过 JavaScript 来构建虚拟 DOM，一
          attrs: { id: 'foo' },
          // 组件 prop
          props: {  myProp: 'bar'  },
+         // DOM property
+         domProps: { innerHTML: 'baz' },
          // 事件监听器
          on: { click: this.clickHandler },
-         // 作用域插槽 { name: props => VNode | Array<VNode> }
+         // 仅用于组件，用于监听原生事件，而不是组件内部使用
+         // `vm.$emit` 触发的事件。
+         nativeOn: { click: this.nativeClickHandler},
+         // 传递作用域插槽 { name: props => VNode | Array<VNode> }
          scopedSlots: {
            default: props => h('span', props.text)
          },
-         // 如果组件是其它组件的子组件，需为插槽指定名称
-        slot: 'name-of-slot',
+         // 传递具名插槽，指定插槽名称
+         slot: 'slot-name',
          key: 'myKey',
          ref: 'myRef',
          // for循环中使用相同的 ref 名， 那么 `$refs.myRef` 会变成一个数组。
@@ -89,30 +94,134 @@ render 是一个渲染函数，可以通过 JavaScript 来构建虚拟 DOM，一
        }
      ```
 
-  3. 第 3 个参数：**子节点**（children），一个包含属性、事件、样式等信息的对象（可选）。
+  3. 第 3 个参数：**子节点**（children），一个子节点、一个子节点数组或者是字符串（可选）。
 
-- **定义插槽**
+- **插槽**
 
   - 默认插槽
     ```js
-    // 定义默认插槽，（my-component组件）
+    // 在my-component组件中定义一个默认插槽
+    render(h) {
+      return h(
+        'div',
+        this.$slots.default
+      );
+    }
+    // 在父组件中使用，通过子节点参数传递默认插槽的VNode
+    render(h) {
+      return h(
+        'my-component',
+        h('div', 'Hello World') // 传递到my-component组件的默认插槽上
+      )
+    }
+    ```
+  - 具名插槽
+    ```js
+    // 在my-component组件中定义具名插槽
     render(h) {
       return h(
         'div',
         [
-          this.$slots.default
+          this.$slots.header,
+          this.$slots.default,
+          this.$slots.footer,
         ]
       );
     }
-    // 实现插槽
+    // 在父组件中使用，通过slot传递对应具名插槽的VNode
     render(h) {
       return h(
         'my-component',
         [
-          h('div', 'Hello World')
+          h('div', { slot:'header' },'顶部插槽内容'),
+          h('div','默认插槽内容'),
+          h('div', { slot:'footer' },'尾部插槽内容')
         ]
       )
     }
     ```
+  - 作用域插槽
+    ```js
+    // 在my-component组件中定义作用域插槽
+    render(h) {
+      return h(
+        'div',
+        [
+          // 先检查是否有对应的插槽传递，再调用插槽函数
+          this.$scopedSlots.header && this.$scopedSlots.header({ header: 'header' }),
+          this.$scopedSlots.default && this.$scopedSlots.default({ default: 'default' }),
+          this.$scopedSlots.footer && this.$scopedSlots.footer({ footer: 'footer' })
+        ]
+      );
+    }
+    // 在父组件中使用，通过scopedSlots传递对应作用域插槽的VNode
+    render(h) {
+      return h(
+        'my-component',
+        {
+          scopedSlots: {
+            header: props => h('div', props.header),
+            default: props => h('div', props.default),
+            footer: props => h('div', props.footer)
+          }
+        }
+      );
+    }
+    ```
 
 - **模版编译**：所有模版都会通过`vue-template-compiler`插件编译为渲染函数。
+
+### JSX
+
+如果子节点比较多，用 render 函数来写的话，会出现很多 h 函数，嵌套起来影响阅读，相比之下直接用标签更清晰，而 JSX**能够在标签内部嵌入 JavaScript 表达式。通过将表达式包裹在大括号 {} 内**，同时具备了灵活性跟可读性，**最后通过 JSX babel 插件解析为 createElement 函数**。
+
+```jsx
+// 在my-component组件中定义普通插槽（默认插槽 & 具名插槽）
+render(h) {
+  const slots = this.$slots // 接受普通插槽，默认插槽名字为default
+  return (
+    <div>
+      { slots.header }
+      { slots.default }
+      { slots.footer }
+    </div>
+  )
+}
+// 在父组件中使用，并往普通插槽插入VNode
+render(h) {
+  return (
+    <my-component>
+      <div slot="header"> 顶部插槽内容 </div>
+      <div> 默认插槽内容 </div>
+      <div slot="footer"> 尾部插槽内容 </div>
+    </my-component>
+  );
+}
+```
+
+```jsx
+// 在my-component组件中定义作用域插槽
+render(h) {
+  const scopedSlots = this.$scopedSlots // 接受作用域插槽
+  return (
+    <div>
+      { scopedSlots.header && scopedSlots.header( header: 'header') }
+      { scopedSlots.default && scopedSlots.default( default: 'default') }
+      { scopedSlots.footer && scopedSlots.footer( footer: 'footer') }
+    </div>
+  )
+}
+// 在父组件中使用，并往普通插槽插入VNode
+render(h) {
+  return (
+    <my-component
+      scopedSlots={{
+        header: (props) => <div>{props.header}</div>,
+        default: (props) => <div>{props.default}</div>,
+        footer: (props) => <div>{props.footer}</div>
+      }}
+    >
+    </my-component>
+  );
+}
+```
