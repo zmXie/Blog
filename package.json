@@ -4,7 +4,7 @@
   "author": "xzm",
   "scripts": {
     "dev": "vuepress dev . --open --host \"localhost\"",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider vuepress build .",
+    "build": "NODE_OPTIONS='--openssl-legacy-provider --max-old-space-size=4096' vuepress build .",
     "deploy": "bash deploy.sh",
     "push": "bash push.sh"
   },
@@ -16,6 +16,6 @@
   },
   "description": "xzm",
   "engines": {
-    "node": "24.x"
+    "node": "20.x"
   }
 }
