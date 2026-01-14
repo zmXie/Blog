@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docx to HTML Converter - 极简转换</title>
+  <!-- 引入字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- 引入图标 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #1f2937;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    /* 拖拽上传区 */
+    .upload-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(248, 250, 252, 0.5);
+    }
+
+    .upload-zone:hover,
+    .upload-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      color: var(--primary);
+      margin: 0 auto 16px;
+    }
+
+    .upload-text {
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .upload-hint {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    /* 操作栏 */
+    .actions {
+      display: none;
+      margin-top: 24px;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover {
+      background: #f9fafb;
+    }
+
+    /* 预览区 */
+    .preview-section {
+      display: none;
+      margin-top: 32px;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 32px;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .preview-title {
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    #output {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      min-height: 200px;
+      max-height: 500px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    #output table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1em 0;
+    }
+
+    #output table th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    /* Word 样式映射支持 */
+    .center { text-align: center !important; }
+    .right { text-align: right !important; }
+    .justify { text-align: justify !important; }
+    .indent { text-indent: 2em !important; }
+    
+    /* 默认样式增强 */
+    #output p { margin-bottom: 0.8em; }
+    #output h1, #output h2, #output h3 { margin-top: 1.2em; margin-bottom: 0.6em; line-height: 1.3; }
+
+    /* 加载中状态 */
+    .loader {
+      display: none;
+      margin: 20px auto;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(99, 102, 241, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* 成功/错误提示 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: #1f2937;
+      color: white;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 100;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>文档转换助手</h1>
+      <p class="subtitle">快速将 Word (.docx) 文档转换为干净的 HTML 代码</p>
+    </header>
+
+    <div class="upload-zone" id="dropZone">
+      <i data-lucide="upload-cloud" class="upload-icon"></i>
+      <div class="upload-text">点击或拖拽 Word 文件到这里</div>
+      <p class="upload-hint">支持 .docx 格式</p>
+      <input type="file" id="fileInput" accept=".docx" />
+    </div>
+
+    <div class="loader" id="loader"></div>
+
+    <div class="actions" id="actionButtons">
+      <button class="btn btn-primary" onclick="downloadHTML()">
+        <i data-lucide="download"></i>
+        下载 HTML
+      </button>
+      <button class="btn btn-secondary" onclick="copyHTML()">
+        <i data-lucide="copy"></i>
+        复制 HTML 代码
+      </button>
+      <button class="btn btn-secondary" onclick="reset()">
+        <i data-lucide="rotate-ccw"></i>
+        重新上传
+      </button>
+    </div>
+
+    <div class="preview-section" id="previewSection">
+      <div class="preview-header">
+        <span class="preview-title">实时预览</span>
+        <span id="fileName" style="font-size: 14px; color: #6b7280"></span>
+      </div>
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- 引入库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.7.2/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cfb@1.2.2/dist/cfb.full.min.js"></script>
+
+  <script>
+    // 初始化图标
+    lucide.createIcons();
+
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const loader = document.getElementById('loader');
+    const actionButtons = document.getElementById('actionButtons');
+    const previewSection = document.getElementById('previewSection');
+    const output = document.getElementById('output');
+    const fileNameSpan = document.getElementById('fileName');
+
+    let currentFileName = '';
+    let currentHTML = '';
+
+    // 拖拽处理
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length) handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', e => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    // 核心转换函数
+    function handleFile(file) {
+      if (!file) return;
+      const fileName = file.name.toLowerCase();
+      // 更稳健的文件名提取：移除最后一个点及其后的所有内容
+      const lastDotIndex = file.name.lastIndexOf('.');
+      currentFileName = lastDotIndex !== -1 ? file.name.substring(0, lastDotIndex) : file.name;
+
+      // 清理文件名中的非法字符和控制字符，防止乱码或下载失败
+      currentFileName = currentFileName.replace(/[\x00-\x1f\x7f-\x9f]/g, "").trim();
+
+      fileNameSpan.textContent = file.name;
+
+      loader.style.display = 'block';
+      dropZone.style.display = 'none';
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const arrayBuffer = e.target.result;
+
+        if (fileName.endsWith('.docx')) {
+          // 处理 .docx (Mammoth)
+          const options = {
+            styleMap: [
+              "p[style-name='Center'] => p.center",
+              "p[style-name='Centered'] => p.center",
+              "p[style-name='居中'] => p.center",
+              "p[style-name='正文居中'] => p.center",
+              "p[style-name='Right'] => p.right",
+              "p[style-name='右对齐'] => p.right",
+              "p[style-name='Indent'] => p.indent",
+              "p[style-name='缩进'] => p.indent",
+              "p[style-name='首行缩进'] => p.indent",
+              "p[style-name='List Paragraph'] => p.indent"
+            ],
+            transformDocument: mammoth.transforms.paragraph(function(paragraph) {
+              // 尝试捕获段落的对齐属性并映射为样式名
+              if (paragraph.alignment === "center") {
+                paragraph.styleName = "Center";
+              } else if (paragraph.alignment === "right") {
+                paragraph.styleName = "Right";
+              } else if (paragraph.alignment === "justify") {
+                paragraph.styleName = "Justify";
+              }
+              return paragraph;
+            })
+          };
+          mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, options)
+            .then(displayResult)
+            .catch(handleError);
+        } else if (fileName.endsWith('.doc')) {
+          // 处理 .doc (Legacy .doc Text Extractor)
+          try {
+            const rawText = extractDocText(arrayBuffer);
+            if (rawText) {
+              const html = rawText.split('\n').filter(line => line.trim()).map(line => `<p>${escapeHTML(line)}</p>`).join('');
+              displayResult({ value: html, messages: [{ type: 'warning', message: '检测到旧版 .doc 格式，已使用“内容提取”模式。由于是旧版二进制文件，部分格式可能丢失。请使用 .docx 格式上传文件。' }] });
+            } else {
+              throw new Error('无法从 .doc 文件中提取内容，文档可能已损坏或受保护。请使用 .docx 格式上传文件。');
+            }
+          } catch (err) {
+            handleError(err);
+          }
+        } else {
+          showToast('目前仅支持 .docx 和 .doc 格式', 'error');
+          reset();
+        }
+      };
+
+      reader.onerror = function () {
+        handleError(new Error('文件读取失败'));
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    // 针对 .doc 的原始文本提取器 (基于 CFB)
+    function extractDocText(arrayBuffer) {
+      try {
+        const cfb = CFB.read(new Uint8Array(arrayBuffer), { type: 'array' });
+        // 查找 WordDocument 流
+        const wordStream = cfb.FileIndex.find(f => f.name === 'WordDocument');
+        if (!wordStream) return null;
+
+        const data = wordStream.content;
+        let text = "";
+
+        // .doc 文件的文本存储在流中。这是一个非常简化的启发式提取器。
+        // 它通过扫描可打印字符块来工作，避开二进制元数据。
+        for (let i = 0; i < data.length; i++) {
+          const charCode = data[i];
+          // 简易过滤：保留常见中文字符、英文字符和换行
+          if ((charCode >= 32 && charCode <= 126) || charCode === 10 || charCode === 13 || charCode > 127) {
+            // 简单处理 UTF-16 (由于 .doc 可能混合编码，这里做宽泛处理)
+            text += String.fromCharCode(charCode);
+          }
+        }
+
+        // 清理由于二进制混合导致的乱码 (Regex 启发式)
+        // 移除连续的非打印或控制字符
+        return text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, "")
+          .replace(/\s+/g, ' ')
+          .replace(/ /g, '\n') // 将空格转为换行尝试恢复段落
+          .split('\n')
+          .filter(l => l.length > 2) // 过滤掉短的二进制残留字符串
+          .join('\n');
+      } catch (e) {
+        console.error('CFB parse error:', e);
+        return null;
+      }
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>"']/g, function (m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[m];
+      });
+    }
+
+    function displayResult(result) {
+      if (!result.value || result.value.trim() === '') {
+        showToast('提醒：转换结果为空，请检查文档内容', 'warning');
+      }
+
+      currentHTML = result.value;
+      output.innerHTML = currentHTML || '<p style="color: #999; text-align: center;">此文档转换后没有内容可供预览</p>';
+
+      loader.style.display = 'none';
+      actionButtons.style.display = 'flex';
+      previewSection.style.display = 'block';
+
+      if (result.messages.length > 0) {
+        console.warn('Conversion messages:', result.messages);
+        const warning = result.messages.find(m => m.type === 'warning');
+        if (warning) showToast(warning.message, 'warning');
+      }
+    }
+
+    function handleError(err) {
+      console.error('转换失败详情:', err);
+      loader.style.display = 'none';
+      dropZone.style.display = 'block';
+
+      let msg = '转换失败';
+      if (err.message && err.message.includes('Can\'t find end of central directory')) {
+        msg = '文件格式异常：请确保这是一个真正的 .docx 文件。如果您手动修改了后缀名，转换将会失败。';
+      } else if (err.message) {
+        msg = '发生错误: ' + err.message;
+      }
+
+      showToast(msg, 'error');
+    }
+
+    // 下载
+    function downloadHTML() {
+      if (!currentHTML) {
+        showToast('内容为空，无法下载', 'error');
+        return;
+      }
+
+      // 再次清理文件名，确保下载时文件名合法
+      // 移除操作系统非法字符: \ / : * ? " < > |
+      let safeFileName = (currentFileName || 'document')
+        .replace(/[\\/:*?"<>|]/g, "_")
+        .trim();
+
+      const fullHTML = `<!DOCTYPE html>
+                        <html lang="zh-CN">
+                        <head>
+                          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                          <meta http-equiv="Content-Style-Type" content="text/css" />
+                          <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+                          <title>${safeFileName}</title>
+                            <style>
+                              body { padding: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 900px; margin: 0 auto; line-height: 1.6; color: #333; }
+                              table { border-collapse: collapse; width: 100%; margin: 1.5em 0; }
+                              table td, table th { border: 1px solid #ddd; padding: 10px; }
+                              img { max-width: 100%; height: auto; display: block; margin: 1em auto; }
+                              /* 格式支持 */
+                              .center { text-align: center !important; }
+                              .right { text-align: right !important; }
+                              .justify { text-align: justify !important; }
+                              .indent { text-indent: 2em !important; }
+                              p { margin-bottom: 0.8em; }
+                              h1, h2, h3 { margin-top: 1.2em; margin-bottom: 0.6em; line-height: 1.3; }
+                              @media (max-width: 600px) { body { padding: 15px; } }
+                            </style>
+                        </head>
+                        <body>
+                          ${currentHTML}
+                        </body>
+                        </html>`;
+
+      const blob = new Blob([fullHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      // 显式指定 .html 后缀
+      a.download = safeFileName.endsWith('.html') ? safeFileName : `${safeFileName}.html`;
+
+      console.log('正在下载文件:', a.download);
+
+      document.body.appendChild(a);
+      a.click();
+
+      // 清理
+      setTimeout(() => {
+        if (document.body.contains(a)) {
+          document.body.removeChild(a);
+        }
+        URL.revokeObjectURL(url);
+      }, 100);
+
+      showToast('HTML 下载已开始');
+    }
+
+    // 复制
+    function copyHTML() {
+      navigator.clipboard.writeText(currentHTML).then(() => {
+        showToast('HTML 代码已成功复制', 'info');
+      });
+    }
+
+    // 重置
+    function reset() {
+      fileInput.value = '';
+      dropZone.style.display = 'block';
+      actionButtons.style.display = 'none';
+      previewSection.style.display = 'none';
+      output.innerHTML = '';
+      currentHTML = '';
+      fileNameSpan.textContent = '';
+    }
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+
+      // 根据类型设置背景色
+      const colors = {
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#1f2937'
+      };
+      toast.style.background = colors[type] || colors.info;
+
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+      }, 5000);
+    }
+  </script>
+</body>
+
+</html>
