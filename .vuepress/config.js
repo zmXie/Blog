@@ -134,8 +134,9 @@ module.exports = {
       }
     }]
   ],
-  configureWebpack: (config, isServer) => {
-    if (!isServer && process.env.NODE_ENV === 'production') {
+  configureWebpack: (config) => {
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization = config.optimization || {}
       config.optimization.minimize = false
     }
   }

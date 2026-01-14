@@ -4,7 +4,8 @@
   "author": "xzm",
   "scripts": {
     "dev": "vuepress dev . --open --host \"localhost\"",
-    "build": "NODE_OPTIONS='--openssl-legacy-provider --max-old-space-size=4096' vuepress build .",
+    "build": "NODE_OPTIONS='--openssl-legacy-provider --max-old-space-size=4096' NODE_ENV=production vuepress build .",
+    "vercel-build": "npm run build",
     "deploy": "bash deploy.sh",
     "push": "bash push.sh"
   },
