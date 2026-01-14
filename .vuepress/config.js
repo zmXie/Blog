@@ -136,11 +136,12 @@ module.exports = {
   ],
   configureWebpack: (config, isServer) => {
     if (!isServer && process.env.NODE_ENV === 'production') {
-      for (const plugin of config.optimization.minimizer) {
-        if (plugin.options && plugin.options.parallel !== undefined) {
-          plugin.options.parallel = false;
+      const minimizers = config.optimization && config.optimization.minimizer || []
+      minimizers.forEach(plugin => {
+        if (plugin && plugin.options && plugin.options.parallel !== undefined) {
+          plugin.options.parallel = false
         }
-      }
+      })
     }
   }
 }
