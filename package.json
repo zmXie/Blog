@@ -14,5 +14,8 @@
     "vuepress-plugin-nuggets-style-copy": "^1.0.3",
     "vuepress-theme-reco": "1.6.10"
   },
-  "description": "xzm"
+  "description": "xzm",
+  "engines": {
+    "node": "16.x"
+  }
 }

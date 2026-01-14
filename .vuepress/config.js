@@ -1,7 +1,7 @@
 module.exports = {
   title: "大大盆子",
   description: "日常记录",
-  dest: "public",
+  dest: "dist",
   head: [
     [
       "link",
