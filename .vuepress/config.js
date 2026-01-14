@@ -134,12 +134,13 @@ module.exports = {
       }
     }]
   ],
-  chainWebpack: (config) => {
-    if (process.env.NODE_ENV === 'production') {
-      config.optimization.minimizer('terser').tap(args => {
-        args[0].parallel = false
-        return args
-      })
+  configureWebpack: (config, isServer) => {
+    if (!isServer && process.env.NODE_ENV === 'production') {
+      for (const plugin of config.optimization.minimizer) {
+        if (plugin.options && plugin.options.parallel !== undefined) {
+          plugin.options.parallel = false;
+        }
+      }
     }
   }
 }
