@@ -133,5 +133,13 @@ module.exports = {
         content: "复制成功!"
       }
     }]
-  ]
+  ],
+  chainWebpack: (config) => {
+    if (process.env.NODE_ENV === 'production') {
+      config.optimization.minimizer('terser').tap(args => {
+        args[0].parallel = false
+        return args
+      })
+    }
+  }
 }
