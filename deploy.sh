@@ -5,7 +5,7 @@ if npm run build; then
     git add -A
     git commit -m 'deploy'
     echo '正在推送中..'
-    if git push -f git@github.com:zmXie/zmXie.github.io.git main; then
+    if git push -f https://github.com/zmXie/zmXie.github.io.git main; then
         echo '推送完成'
         cd ../
         rm -rf dist
