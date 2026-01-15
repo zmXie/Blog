@@ -4,7 +4,7 @@
   "author": "xzm",
   "scripts": {
     "dev": "vuepress dev . --open --host \"localhost\"",
-    "build": "NODE_OPTIONS='--openssl-legacy-provider --max-old-space-size=4096' NODE_ENV=production vuepress build .",
+    "build": "vuepress build .",
     "vercel-build": "npm run build",
     "deploy": "bash deploy.sh",
     "push": "bash push.sh"
@@ -15,8 +15,5 @@
     "vuepress-plugin-nuggets-style-copy": "^1.0.3",
     "vuepress-theme-reco": "1.6.10"
   },
-  "description": "xzm",
-  "engines": {
-    "node": "20.x"
-  }
+  "description": "xzm"
 }
