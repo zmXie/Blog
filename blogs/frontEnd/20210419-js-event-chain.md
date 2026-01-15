@@ -17,7 +17,7 @@ categories:
 - **目标阶段**：事件到达目标节点，目标节点处理事件阶段。
 - **冒泡阶段**：事件从目标节点开始，从下往上传播，直到根节点。
 
-<img style="width:50%" :src="$withBase('/event_chain.png')" alt="eventChain">
+<img style="width:50%" :src="$withBase('/imgs/event_chain.png')" alt="eventChain">
 
 在事件流中，每个元素都可以对事件进行处理，可以通过`addEventListener`添加事件监听，也可以使用 `on` 开头的属性设置事件处理函数，**默认在冒泡阶段响应。**，比如元素节点`html`->`div`->`p`，点击 p，则触发的 click 事件顺序为`p`->`div`->`html`。
 

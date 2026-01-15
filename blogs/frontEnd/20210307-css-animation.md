@@ -76,7 +76,7 @@ svg 是基于 xml 格式的矢量图，我们也可以使用 svg 标签来自定
     <text x="30" y="55" fill="red">SVG</text>
 </svg>
 ```
-<iframe id="iframe" height=150 width=100% frameborder=0 allowfullscreen="true" :src="$withBase('/svg.html')">  
+<iframe id="iframe" height=150 width=100% frameborder=0 allowfullscreen="true" :src="$withBase('/imgs/svg.html')">  
  </iframe>
 
 - [svg教程](https://www.runoob.com/svg/svg-tutorial.html)
@@ -127,5 +127,5 @@ svg 是基于 xml 格式的矢量图，我们也可以使用 svg 标签来自定
     }
 </style>
 ```
-<iframe id="iframe" height=150 width=100% frameborder=0 allowfullscreen="true" :src="$withBase('/loading.html')">  
+<iframe id="iframe" height=150 width=100% frameborder=0 allowfullscreen="true" :src="$withBase('/imgs/loading.html')">  
  </iframe>

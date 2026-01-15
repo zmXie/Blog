@@ -57,7 +57,7 @@ categories:
   console.log(Person.prototype.constructor === Person); // true
   ```
 
-<img :src="$withBase('/原型与构造函数.png')" alt="mixureSecure">
+<img :src="$withBase('/imgs/原型与构造函数.png')" alt="mixureSecure">
 
 ### 原型链
 
@@ -68,7 +68,7 @@ categories:
   let xiaoming = new Person();
   ```
 
-  <img :src="$withBase('/对象原型链.png')" alt="mixureSecure">
+  <img :src="$withBase('/imgs/对象原型链.png')" alt="mixureSecure">
 
 - 在 JavaScript 中函数也是对象，同样有`__proto__`指针属性，所有函数的`__proto__`都统一指向`Function.prototype`，`Function.prototype`的`__proto__`指向`Object.prototype`。
-  <img :src="$withBase('/完整原型链.png')" alt="mixureSecure">
+  <img :src="$withBase('/imgs/完整原型链.png')" alt="mixureSecure">
